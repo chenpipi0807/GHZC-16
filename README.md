@@ -1,3 +1,8 @@
+
+<img width="811" height="941" alt="a69191268d4f48682b59a2bf5fcf361c" src="https://github.com/user-attachments/assets/58557b3d-8946-475b-b0ea-9218e5c6633c" />
+
+
+
 # 职场16型人格测试
 
 基于WAM 2.0模型（职场行为四象模型）的职场人格测试应用，通过10道精心设计的情境题目，分析你在职场中的行为模式。
@@ -30,7 +35,7 @@ python app.py
 ```
 
 3. 访问应用：
-打开浏览器访问 `http://localhost:6000`
+打开浏览器访问 `http://localhost:5000`
 
 ## 测试维度说明
 
