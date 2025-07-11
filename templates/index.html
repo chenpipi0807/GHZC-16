@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title">
+                        <i class="fas fa-users"></i>
+                        职场16型人格测试
+                    </h1>
+                    <p class="card-subtitle">基于WAM 2.0模型，发现你的职场行为模式</p>
+                </div>
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="row">
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 rounded-3" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                    <i class="fas fa-target text-white fa-2x mb-2"></i>
+                                    <h6 class="text-white mb-0">目标驱动</h6>
+                                    <small class="text-white-50">G维度</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 rounded-3" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);">
+                                    <i class="fas fa-cogs text-white fa-2x mb-2"></i>
+                                    <h6 class="text-white mb-0">执行力</h6>
+                                    <small class="text-white-50">H维度</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 rounded-3" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                                    <i class="fas fa-chess text-white fa-2x mb-2"></i>
+                                    <h6 class="text-white mb-0">人际博弈</h6>
+                                    <small class="text-white-50">Z维度</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 rounded-3" style="background: linear-gradient(135deg, #fce38a, #f38181);">
+                                    <i class="fas fa-lightbulb text-white fa-2x mb-2"></i>
+                                    <h6 class="text-white mb-0">创新混乱</h6>
+                                    <small class="text-white-50">C维度</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-4">
+                        <h3 class="mb-3">了解你的职场人格</h3>
+                        <p class="lead mb-4">
+                            通过10道精心设计的职场情境题，深入分析你在<strong>目标驱动(G)</strong>、<strong>执行力(H)</strong>、<strong>人际博弈(Z)</strong>、<strong>创新混乱(C)</strong>四个维度的行为倾向。
+                        </p>
+                        
+                        <div class="alert alert-info mb-4" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>测试说明：</strong>选择最符合你本能反应或最常见行为的选项，无需过度思考，选最真实的你。
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-clock text-primary me-3 fa-2x"></i>
+                                <div>
+                                    <h6 class="mb-1">测试时长</h6>
+                                    <p class="mb-0 text-muted">约5-8分钟</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-question-circle text-primary me-3 fa-2x"></i>
+                                <div>
+                                    <h6 class="mb-1">题目数量</h6>
+                                    <p class="mb-0 text-muted">10道选择题</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="/test" class="btn btn-primary btn-lg px-5 py-3">
+                            <i class="fas fa-play me-2"></i>
+                            开始测试
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

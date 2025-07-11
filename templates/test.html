@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        职场人格测试
+                    </h2>
+                    <div class="progress mt-3">
+                        <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <small class="text-white mt-2 d-block">
+                        <span id="currentQuestion">1</span> / {{ questions|length }}
+                    </small>
+                </div>
+                <div class="card-body p-4">
+                    <form id="testForm">
+                        {% for question in questions %}
+                        <div class="question-card card mb-4" data-question="{{ loop.index0 }}">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="question-number">{{ loop.index }}</div>
+                                    <h5 class="mb-0 flex-grow-1">{{ question.question }}</h5>
+                                </div>
+                                <div class="options">
+                                    {% set outer_loop = loop %}
+                                    {% for option in question.options %}
+                                    <button type="button" class="option-btn" data-question="{{ outer_loop.index0 }}" data-option="{{ loop.index0 }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="option-letter me-3 fw-bold">{{ ['A', 'B', 'C', 'D'][loop.index0] }}</span>
+                                            <span class="flex-grow-1">{{ option.text }}</span>
+                                        </div>
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3" id="submitBtn" disabled>
+                                <i class="fas fa-paper-plane me-2"></i>
+                                提交测试
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 结果模态框 -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+                <h5 class="modal-title">
+                    <i class="fas fa-trophy me-2"></i>
+                    测试结果
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="result-card">
+                    <div class="result-type" id="resultType"></div>
+                    <div class="result-name" id="resultName"></div>
+                    <div class="result-description mb-4" id="resultDescription"></div>
+                    
+                    <div class="mb-4">
+                        <h6 class="mb-3">核心特质：</h6>
+                        <div id="resultTraits"></div>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <h6 class="mb-2">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            发展建议：
+                        </h6>
+                        <p class="mb-0" id="resultAdvice"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="location.reload()">
+                    <i class="fas fa-redo me-2"></i>
+                    重新测试
+                </button>
+                <button type="button" class="btn btn-primary" onclick="location.href='/'">
+                    <i class="fas fa-home me-2"></i>
+                    返回首页
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const answers = new Array({{ questions|length }}).fill(-1);
+    const optionButtons = document.querySelectorAll('.option-btn');
+    const submitBtn = document.getElementById('submitBtn');
+    const progressBar = document.getElementById('progressBar');
+    const currentQuestionSpan = document.getElementById('currentQuestion');
+    const totalQuestions = {{ questions|length }};
+    
+    // 处理选项点击
+    optionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const questionIndex = parseInt(this.dataset.question);
+            const optionIndex = parseInt(this.dataset.option);
+            
+            // 清除同题目其他选项的选中状态
+            const sameQuestionButtons = document.querySelectorAll(`.option-btn[data-question="${questionIndex}"]`);
+            sameQuestionButtons.forEach(btn => btn.classList.remove('selected'));
+            
+            // 选中当前选项
+            this.classList.add('selected');
+            answers[questionIndex] = optionIndex;
+            
+            // 更新进度
+            updateProgress();
+            
+            // 滚动到下一题
+            scrollToNextQuestion(questionIndex);
+        });
+    });
+    
+    function updateProgress() {
+        const answeredCount = answers.filter(answer => answer !== -1).length;
+        const progress = (answeredCount / totalQuestions) * 100;
+        progressBar.style.width = progress + '%';
+        currentQuestionSpan.textContent = Math.min(answeredCount + 1, totalQuestions);
+        
+        // 启用/禁用提交按钮
+        submitBtn.disabled = answeredCount < totalQuestions;
+        
+        if (answeredCount === totalQuestions) {
+            submitBtn.classList.add('pulse');
+        }
+    }
+    
+    function scrollToNextQuestion(currentIndex) {
+        if (currentIndex < totalQuestions - 1) {
+            setTimeout(() => {
+                const nextQuestion = document.querySelector(`[data-question="${currentIndex + 1}"]`);
+                if (nextQuestion) {
+                    nextQuestion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 300);
+        } else {
+            setTimeout(() => {
+                submitBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    }
+    
+    // 处理表单提交
+    document.getElementById('testForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (answers.includes(-1)) {
+            alert('请完成所有题目后再提交！');
+            return;
+        }
+        
+        // 显示加载状态
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>分析中...';
+        submitBtn.disabled = true;
+        
+        // 提交答案
+        fetch('/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ answers: answers })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            // 显示结果
+            showResult(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('提交失败，请重试！');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>提交测试';
+            submitBtn.disabled = false;
+        });
+    });
+    
+    function showResult(data) {
+        document.getElementById('resultType').textContent = data.type;
+        document.getElementById('resultName').textContent = data.result.name;
+        document.getElementById('resultDescription').textContent = data.result.description;
+        document.getElementById('resultAdvice').textContent = data.result.advice;
+        
+        // 显示特质标签
+        const traitsContainer = document.getElementById('resultTraits');
+        traitsContainer.innerHTML = '';
+        data.result.traits.forEach(trait => {
+            const badge = document.createElement('span');
+            badge.className = 'trait-badge';
+            badge.textContent = trait;
+            traitsContainer.appendChild(badge);
+        });
+        
+        // 显示模态框
+        const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+        modal.show();
+    }
+});
+
+// 添加脉冲动画样式
+const style = document.createElement('style');
+style.textContent = `
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}
